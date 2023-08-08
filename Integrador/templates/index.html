@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BAX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/3.jpeg') }}" alt="Logo del proyecto" class="logo">
+        </div>
+        <h1>Panel de Usuario</h1>
+    </div>
+    
+    
+    
+    <button id="btn-usuario">Registro de Usuario</button>
+    <button id="btn-contacto">Registro de Contacto</button>
+    <button id="btn-incidente">Registro de Incidente</button>
+    <button id="btn-lista-usuarios">Ver Lista de Usuarios</button>
+    <button id="btn-lista-contactos">Ver Lista de Contactos</button>
+    <button id="btn-lista-incidentes">Ver Lista de Incidentes</button>
+    
+    <div class="formularios">
+        <!-- Formulario de registro de usuario -->
+        <form id="form-usuario" method="POST" style="display: none;" action="{{ url_for('registro_usuario') }}">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="apellido_paterno">Apellido Paterno:</label>
+            <input type="text" id="apellido_paterno" name="apellido_paterno" required>
+            <label for="apellido_materno">Apellido Materno:</label>
+            <input type="text" id="apellido_materno" name="apellido_materno" required>
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
+            <label for="correo">Correo:</label>
+            <input type="text" id="correo" name="correo">
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion">
+            <button type="submit">Registrar Usuario</button>
+        </form>
+    
+        <!-- Formulario de registro de contacto -->
+        <form id="form-contacto" method="POST" style="display: none;" action="{{ url_for('registro_contacto') }}">
+            <label for="usuario_id">Usuario ID:</label>
+            <input type="text" id="usuario_id" name="usuario_id" required>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
+            <button type="submit">Registrar Contacto</button>
+        </form>
+    
+        <!-- Formulario de registro de incidente -->
+        <form id="form-incidente" method="POST" style="display: none;" action="{{ url_for('registro_incidente') }}">
+            <label for="usuario_id">Usuario ID:</label>
+            <input type="text" id="usuario_id" name="usuario_id" required>
+            <label for="fecha_hora">Fecha y Hora:</label>
+            <input type="datetime-local" id="fecha_hora" name="fecha_hora" required>
+            <label for="tipo_incidente">Tipo de Incidente:</label>
+            <input type="text" id="tipo_incidente" name="tipo_incidente" required>
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" required>
+            <button type="submit">Registrar Incidente</button>
+        </form>
+    </div>
+    
+    <div class="listas">
+        <div class="lista-usuarios" style="display: none;">
+            <h2>Lista de Usuarios</h2>
+            <ul>
+                {% for usuario in usuarios %}
+                <li>
+                    <strong>{{ usuario[1] }} {{ usuario[2] }} {{ usuario[3] }}</strong> <br> ID de Usuario: {{ usuario[0] }} <br> Teléfono: {{ usuario[4] }} <br> Correo: {{ usuario[5] }} <br> Dirección: {{ usuario[6] }}
+                    <form action="{{ url_for('eliminar_usuario', id=usuario[0]) }}" method="POST">
+                        <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">Eliminar</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    
+        <div class="lista-contactos" style="display: none;">
+            <h2>Lista de Contactos</h2>
+            <ul>
+                {% for contacto in contactos %}
+                <li>
+                    <strong>{{ contacto[2] }}</strong> <br> ID de Usuario perteneciente: {{ contacto[1] }} <br> Teléfono: {{ contacto[3] }}  
+                    <form action="{{ url_for('eliminar_contacto', id=contacto[0]) }}" method="POST">
+                        <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este contacto?')">Eliminar</button>
+                    </form> 
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    
+        <div class="lista-incidentes" style="display: none;">
+            <h2>Lista de Incidentes</h2>
+            <ul>
+                {% for incidente in incidentes %}
+                <li>
+                    <strong> Tipo de incidente: {{ incidente[3] }}</strong> <br> ID de Usuario perteneciente: {{ incidente[1] }} <br> Fecha de incidente: {{ incidente[2] }} <br> Dirección: {{ incidente[4] }}
+                    <form action="{{ url_for('eliminar_incidente', id=incidente[0]) }}" method="POST">
+                        <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este incidente?')">Eliminar</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnUsuario = document.getElementById('btn-usuario');
+            const btnContacto = document.getElementById('btn-contacto');
+            const btnIncidente = document.getElementById('btn-incidente');
+            
+            const formUsuario = document.getElementById('form-usuario');
+            const formContacto = document.getElementById('form-contacto');
+            const formIncidente = document.getElementById('form-incidente');
+            
+            const btnListaUsuarios = document.getElementById('btn-lista-usuarios');
+            const btnListaContactos = document.getElementById('btn-lista-contactos');
+            const btnListaIncidentes = document.getElementById('btn-lista-incidentes');
+
+            const listaUsuarios = document.querySelector('.lista-usuarios');
+            const listaContactos = document.querySelector('.lista-contactos');
+            const listaIncidentes = document.querySelector('.lista-incidentes');
+    
+            const divFormularios = document.querySelector('.formularios');
+            const divListas = document.querySelector('.listas');
+
+            btnUsuario.addEventListener('click', function() {
+                formUsuario.style.display = 'block';
+                formContacto.style.display = 'none';
+                formIncidente.style.display = 'none';
+            });
+            
+            btnContacto.addEventListener('click', function() {
+                formUsuario.style.display = 'none';
+                formContacto.style.display = 'block';
+                formIncidente.style.display = 'none';
+            });
+            
+            btnIncidente.addEventListener('click', function() {
+                formUsuario.style.display = 'none';
+                formContacto.style.display = 'none';
+                formIncidente.style.display = 'block';
+            });
+              
+            btnListaUsuarios.addEventListener('click', function() {
+            divFormularios.style.display = 'none';
+            divListas.style.display = 'block';
+            listaUsuarios.style.display = 'block';
+            listaContactos.style.display = 'none';
+            listaIncidentes.style.display = 'none';
+            });
+    
+            btnListaContactos.addEventListener('click', function() {
+            divFormularios.style.display = 'none';
+            divListas.style.display = 'block';
+            listaUsuarios.style.display = 'none';
+            listaContactos.style.display = 'block';
+            listaIncidentes.style.display = 'none';
+            });
+    
+            btnListaIncidentes.addEventListener('click', function() {
+            divFormularios.style.display = 'none';
+            divListas.style.display = 'block';
+            listaUsuarios.style.display = 'none';
+            listaContactos.style.display = 'none';
+            listaIncidentes.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

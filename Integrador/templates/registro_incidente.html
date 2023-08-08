@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro de Incidente</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Registro de Incidente</h1>
+    
+    <form action="{{ url_for('registro_incidente') }}" method="POST">
+        <label for="usuario_id">ID de Usuario:</label>
+        <input type="text" id="usuario_id" name="usuario_id" required>
+        
+        <label for="fecha_hora">Fecha y Hora:</label>
+        <input type="datetime-local" id="fecha_hora" name="fecha_hora" required>
+        
+        <label for="tipo_incidente">Tipo de Incidente:</label>
+        <input type="text" id="tipo_incidente" name="tipo_incidente" required>
+        
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion">
+        
+        <button type="submit">Registrar Incidente</button>
+    </form>
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flash-messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</body>
+</html>
